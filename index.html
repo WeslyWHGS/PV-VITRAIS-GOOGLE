@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Método Vitral Caseiro — Descubra seu plano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+
+<style>
+  :root{
+    --bg:#f2f2f4;
+    --card:#ffffff;
+    --card-border:#e4e4e8;
+    --pink:#ff3d94;
+    --pink-soft:#ffe1ee;
+    --ink:#1c1c22;
+    --ink-soft:#77767f;
+    --green:#17a568;
+    --green-dark:#0e8a56;
+    --white:#ffffff;
+    --radius:12px;
+    --shadow: 0 2px 8px rgba(20,20,25,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    font-family:'Poppins',system-ui,sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding:24px 16px 60px;
+  }
+  .phone{width:100%;max-width:520px;}
+
+  .progress-track{
+    height:6px;background:#e4e4e8;
+    border-radius:99px;overflow:hidden;
+    margin-bottom:28px;
+  }
+  /* Na tela de loading a barra sai de cena, mas o espaço fica: assim o conteúdo não
+     salta quando ela reaparece na tela seguinte. */
+  .progress-track.hidden{visibility:hidden;}
+  .progress-fill{
+    height:100%;width:0%;background:var(--pink);
+    border-radius:99px;transition:width .4s ease;
+  }
+
+  .screen{display:none;animation:fadeIn .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  h1{
+    font-size:26px;font-weight:700;line-height:1.28;
+    text-align:center;margin:0 0 6px;
+  }
+  h1 .accent{color:var(--pink);}
+  .subtitle{
+    text-align:center;color:var(--ink-soft);
+    font-size:14px;margin:0 0 22px;
+  }
+
+  .options{display:flex;flex-direction:column;gap:10px;margin-bottom:8px;}
+  .option{
+    display:flex;align-items:center;gap:14px;
+    background:var(--card);
+    border:1.5px solid var(--card-border);
+    border-radius:var(--radius);
+    padding:15px 16px;cursor:pointer;
+    transition:all .15s ease;text-align:left;
+  }
+  .option:hover{border-color:#cfcfd6;}
+  .option.selected{
+    background:#f4fbf7;
+    border-color:var(--green);
+    box-shadow:0 0 0 1px var(--green);
+  }
+  .option .emoji{
+    width:36px;height:36px;min-width:36px;
+    border-radius:50%;background:#f5f5f7;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;
+  }
+  .option span.label{flex:1;font-weight:500;font-size:15px;color:var(--ink);}
+  .option .indicator{display:none;}
+  .option.multi .indicator{
+    display:flex;width:22px;height:22px;
+    border-radius:6px;border:2px solid #d6d6dc;
+    background:var(--white);
+    align-items:center;justify-content:center;flex:none;
+  }
+  .option.multi.selected .indicator{
+    border-color:var(--green);background:var(--green);
+  }
+  .option.multi.selected .indicator::after{
+    content:"✓";color:#fff;font-size:13px;font-weight:700;
+  }
+
+  .helper{
+    text-align:center;color:var(--ink-soft);
+    font-size:12.5px;margin-top:18px;
+  }
+
+  .cta{
+    display:block;width:100%;
+    background:linear-gradient(135deg,#1dc47c,var(--green) 60%,var(--green-dark));
+    color:#fff;border:none;border-radius:10px;
+    padding:16px;font-size:15px;font-weight:800;
+    letter-spacing:.3px;text-transform:uppercase;
+    cursor:pointer;font-family:inherit;
+    box-shadow:0 4px 14px rgba(23,165,104,.45);
+    margin-top:18px;
+    transition:background .15s ease, transform .15s ease, opacity .2s ease;
+    animation:ctaPulse 1.8s ease-in-out infinite;
+  }
+  .cta:hover{background:linear-gradient(135deg,#1dc47c,var(--green-dark) 60%,var(--green-dark));animation-play-state:paused;}
+  .cta:active{transform:scale(.97);}
+  .cta:disabled{opacity:.4;cursor:not-allowed;animation:none;box-shadow:none;}
+  @keyframes ctaPulse{
+    0%{box-shadow:0 4px 14px rgba(23,165,104,.45);transform:scale(1);}
+    50%{box-shadow:0 4px 22px 6px rgba(23,165,104,.65);transform:scale(1.015);}
+    100%{box-shadow:0 4px 14px rgba(23,165,104,.45);transform:scale(1);}
+  }
+
+  /* Landing */
+  .hero-headline{
+    text-align:center;font-weight:700;font-size:24px;
+    line-height:1.28;color:var(--ink);margin:0 0 14px;
+  }
+  .hero-badge-pink{
+    display:block;width:fit-content;max-width:92%;
+    margin:0 auto 20px;background:var(--pink-soft);
+    padding:8px 20px;border-radius:8px;
+  }
+  .hero-badge-pink span{
+    display:block;font-weight:800;font-size:20px;
+    color:var(--pink);letter-spacing:.2px;
+    text-align:center;white-space:nowrap;
+  }
+  .money{color:var(--green);font-weight:700;}
+  @media (max-width:380px){.hero-badge-pink span{font-size:17px;}}
+
+  .hero-poster{
+    margin:18px 0;border-radius:20px;overflow:hidden;
+    box-shadow:var(--shadow);background:#fff;
+  }
+  .hero-poster img{width:100%;height:auto;display:block;}
+
+  .lead{
+    text-align:center;font-size:14.5px;line-height:1.6;
+    color:var(--ink);margin-bottom:6px;
+  }
+  .support-text{
+    text-align:center;font-size:13.5px;color:var(--ink);
+    line-height:1.6;margin:16px 0;
+  }
+  .ribbon{
+    background:var(--ink);color:#fff;font-size:13.5px;
+    font-weight:600;padding:12px 16px;border-radius:8px;
+    text-align:center;margin:14px 0 18px;line-height:1.5;
+  }
+  .section-title{
+    text-align:center;font-size:18px;font-weight:700;
+    margin:26px 0 4px;
+  }
+  .section-sub{
+    text-align:center;font-size:13px;color:var(--ink-soft);
+    line-height:1.6;margin:0 0 6px;
+  }
+
+  /* Objeção */
+  .art-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;
+  }
+  .art-grid figure{margin:0;border-radius:14px;overflow:hidden;box-shadow:var(--shadow);background:#fff;}
+  .art-grid img{
+    width:100%;aspect-ratio:4/3;object-fit:cover;display:block;
+  }
+  .pill-no{
+    display:block;width:fit-content;margin:0 auto 14px;
+    background:var(--pink);color:#fff;font-weight:700;
+    font-size:15px;padding:8px 26px;border-radius:99px;
+  }
+  .objection-text{
+    text-align:center;color:var(--ink-soft);
+    font-size:14px;line-height:1.6;margin-bottom:6px;
+  }
+
+  /* Depoimentos */
+  .mentor-row{display:flex;justify-content:center;margin-bottom:18px;}
+  .mentor-avatar{
+    width:96px;height:96px;border-radius:50%;
+    background:linear-gradient(140deg,#eeeef1,#e2e2e7);
+    border:4px solid #fff;box-shadow:var(--shadow);overflow:hidden;
+  }
+  .mentor-avatar img{
+    width:100%;height:100%;object-fit:cover;display:block;
+  }
+  .testi-card{
+    background:var(--white);border-radius:18px;
+    padding:10px;box-shadow:0 6px 16px rgba(0,0,0,.06);
+    margin-bottom:14px;
+  }
+  .testi-card img{
+    width:100%;height:auto;display:block;border-radius:12px;
+  }
+  .testi-carousel{overflow:hidden;position:relative;margin-top:22px;margin-bottom:10px;}
+  .testi-track{display:flex;will-change:transform;}
+  .testi-track.no-anim{transition:none !important;}
+  .testi-track.anim{transition:transform .5s ease;}
+  .testi-card.slide{flex:0 0 90%;margin-right:10px;margin-bottom:0;}
+  .testi-dots{display:flex;justify-content:center;gap:6px;margin:4px 0 16px;}
+  .testi-dot{width:6px;height:6px;border-radius:50%;background:var(--card-border);transition:background .2s,width .2s;}
+  .testi-dot.active{background:var(--pink);width:16px;border-radius:3px;}
+
+  .disclaimer{
+    text-align:center;font-size:11px;color:var(--ink-soft);
+    line-height:1.6;margin:16px 0 6px;
+  }
+  .footer-brand{
+    text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:4px;
+  }
+
+  /* Prova social */
+  .wa-chat{
+    background:#e7f3ea;border-radius:16px;padding:14px;
+    margin:16px 0 6px;box-shadow:var(--shadow);
+  }
+  .wa-bubble{
+    background:#fff;border-radius:12px 12px 12px 2px;
+    padding:11px 13px;font-size:13.5px;line-height:1.55;
+    box-shadow:0 1px 2px rgba(0,0,0,.08);margin-bottom:8px;
+    position:relative;
+  }
+  .wa-bubble.me{
+    background:#d9fdd3;border-radius:12px 12px 2px 12px;margin-left:38px;margin-bottom:0;
+  }
+  .wa-name{
+    font-size:11.5px;font-weight:700;color:var(--pink);
+    margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px;
+  }
+  .wa-time{
+    display:block;text-align:right;font-size:10.5px;
+    color:var(--ink-soft);margin-top:4px;
+  }
+
+  .shop-card{
+    background:#fff;border:1px solid var(--card-border);
+    border-radius:16px;overflow:hidden;box-shadow:var(--shadow);
+    margin:14px 0 6px;
+  }
+  .shop-card img{width:100%;height:auto;display:block;}
+  .shop-caption{
+    text-align:center;font-size:12px;color:var(--ink-soft);
+    line-height:1.5;margin:8px 0 0;
+  }
+
+  /* Loading */
+  .loading-wrap{text-align:center;padding:48px 8px 20px;}
+  .loading-wrap h1{font-size:22px;margin-bottom:28px;}
+  .loading-bar-track{
+    width:100%;height:10px;background:#e4e4e8;
+    border-radius:99px;overflow:hidden;
+  }
+  .loading-bar-fill{
+    height:100%;width:0%;background:var(--pink);
+    border-radius:99px;transition:width .25s ease;
+  }
+  .loading-status{
+    margin-top:14px;font-size:13px;color:var(--ink-soft);
+    min-height:1.4em;transition:opacity .25s ease;
+  }
+
+  /* Resultado */
+  .result-wrap{text-align:center;padding-top:6px;}
+  .plan-card{
+    background:#fff;border:1px solid var(--card-border);
+    border-radius:16px;padding:18px 16px;
+    box-shadow:var(--shadow);margin:18px 0 6px;text-align:left;
+  }
+  .plan-card h2{
+    font-size:15px;font-weight:700;margin:0 0 12px;
+    text-align:center;line-height:1.4;
+  }
+  .check-list{list-style:none;margin:0;padding:0;}
+  .check-list li{
+    display:flex;gap:10px;align-items:flex-start;
+    font-size:13.5px;line-height:1.55;margin-bottom:11px;
+  }
+  .check-list li:last-child{margin-bottom:0;}
+  .check-list li::before{
+    content:"✓";flex:none;width:20px;height:20px;
+    border-radius:50%;background:#e6f7ef;color:var(--green);
+    font-size:12px;font-weight:800;
+    display:flex;align-items:center;justify-content:center;
+    margin-top:1px;
+  }
+  .moldes-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 6px;
+  }
+  .moldes-grid img{
+    width:100%;aspect-ratio:4/3;object-fit:cover;
+    border-radius:10px;display:block;
+  }
+  .scarcity{
+    background:var(--ink);color:#fff;font-size:12.5px;
+    font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+    padding:10px 14px;border-radius:8px 8px 0 0;text-align:center;
+  }
+  .price-box{
+    background:#fff;border:1px solid var(--card-border);
+    border-top:none;border-radius:0 0 12px 12px;
+    padding:18px 16px;text-align:center;box-shadow:var(--shadow);
+  }
+  .price-name{
+    font-size:14px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.6px;color:var(--ink);margin:0 0 6px;
+  }
+  .price-old{font-size:14px;color:var(--ink-soft);}
+  .price-old s{text-decoration:line-through;}
+  .price-new{
+    display:block;font-size:38px;font-weight:800;
+    color:var(--green);line-height:1.1;margin:2px 0 2px;
+  }
+  .price-note{font-size:12.5px;color:var(--ink-soft);margin:0;}
+  .offer-timer{
+    font-size:13.5px;color:var(--ink-soft);margin:12px 0 0;
+  }
+  .offer-timer b{color:var(--ink);font-weight:700;}
+  .pay-seal{
+    display:block;width:100%;max-width:230px;
+    height:auto;margin:10px auto 0;
+  }
+  /* Os bônus competem com o preço logo acima, então ganham um bloco fechado no verde
+     do CTA em vez de ficarem soltos como cards brancos na página. */
+  .bonus-block{
+    background:linear-gradient(180deg,#e6f7ef,#eefaf4);
+    border:1px solid #bfe8d4;border-radius:14px;
+    padding:14px;margin:18px 0 6px;
+  }
+  .bonus-head{
+    background:linear-gradient(135deg,#1dc47c,var(--green) 60%,var(--green-dark));
+    color:#fff;border-radius:10px;padding:13px 14px;text-align:center;
+  }
+  .bonus-head b{
+    display:block;font-size:15.5px;font-weight:800;
+    line-height:1.35;letter-spacing:.2px;
+  }
+  .bonus-head span{display:block;font-size:12px;margin-top:4px;opacity:.92;}
+  .bonus-card{
+    background:#fff;border:1px solid #cfeadd;
+    border-left:4px solid var(--green);border-radius:10px;
+    padding:13px 14px;margin-top:10px;text-align:left;
+  }
+  .bonus-tag{
+    display:inline-block;background:var(--green);color:#fff;
+    font-size:10.5px;font-weight:800;text-transform:uppercase;
+    letter-spacing:.6px;padding:3px 9px;border-radius:20px;margin-bottom:7px;
+  }
+  .bonus-card b{display:block;font-size:13.5px;margin-bottom:4px;}
+  .bonus-card p{margin:0;font-size:12.5px;line-height:1.55;color:var(--ink-soft);}
+  .guarantee{
+    background:#e6f7ef;border:1px solid #bfe8d4;
+    border-radius:12px;padding:16px;margin:18px 0 6px;text-align:center;
+  }
+  .guarantee b{display:block;font-size:14.5px;margin-bottom:6px;color:var(--green-dark);}
+  .guarantee p{margin:0;font-size:13px;line-height:1.55;color:var(--ink);}
+  .bio-card{
+    background:#fff;border:1px solid var(--card-border);
+    border-radius:16px;padding:18px 16px;margin:18px 0 6px;
+    text-align:left;box-shadow:var(--shadow);
+  }
+  .bio-card p{font-size:13px;line-height:1.65;color:var(--ink-soft);margin:0 0 10px;}
+  .bio-card p:last-child{margin-bottom:0;}
+  .bio-photo{
+    display:block;width:104px;height:104px;margin:0 auto;
+    border-radius:50%;object-fit:cover;
+    box-shadow:0 0 0 3px #fff, 0 6px 16px rgba(17,17,26,.14);
+  }
+  .bio-name{
+    text-align:center;font-size:16px;font-weight:700;
+    color:var(--ink);margin:12px 0 12px;
+  }
+  .waiting-note{
+    text-align:center;color:var(--ink-soft);font-size:12.5px;margin-top:14px;
+  }
+  @media (max-width:380px){h1{font-size:22px;}}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
+  }
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <div class="progress-track" id="progressTrack"><div class="progress-fill" id="progressFill"></div></div>
+
+  <!-- TELA 0 — LANDING -->
+  <section class="screen active" data-screen="0">
+    <h1 class="hero-headline">Descubra a técnica que transforma vidros e objetos comuns em verdadeiras obras de arte:</h1>
+    <div class="hero-badge-pink"><span>Método Vitral Caseiro</span></div>
+    <p class="lead">Oi! Meu nome é <b>Sônia Albuquerque</b> e trabalho com vitral caseiro há mais de <b>8 anos</b>. Descobri um jeito <b>simples e lucrativo</b> de transformar CDs, papéis, vidros e molduras em peças com efeito vitral que encantam — e que podem gerar mais de <span class="money">R$1.500 por mês</span>, mesmo começando do zero.</p>
+
+    <div class="hero-poster">
+      <img src="img/sonia.jpg" alt="Sônia Albuquerque no ateliê com peças em efeito vitral: mandalas em CD, quadro de rosa, quadro religioso e pingentes">
+    </div>
+
+    <p class="support-text">Responda <b>7 perguntas rápidas</b> e eu monto um plano personalizado com os moldes e as técnicas ideais pra você começar sua primeira peça esta semana.</p>
+
+    <button class="cta" onclick="goTo(1)">Quero meu plano personalizado</button>
+
+    <p class="disclaimer">Os resultados podem variar de acordo com a dedicação, experiência, disponibilidade e aplicação individual de cada aluna. O conteúdo é educacional e não representa garantia de ganhos financeiros.</p>
+    <p class="footer-brand">© 2026 Sônia Albuquerque · Método Vitral Caseiro</p>
+  </section>
+
+  <!-- TELA 1 — Experiência com artesanato manual -->
+  <section class="screen" data-screen="1">
+    <h1>Você já trabalhou com pintura, colagem ou algum outro tipo de <span class="accent">artesanato manual</span>?</h1>
+    <p class="subtitle">Não existe resposta errada — isso só me ajuda a ajustar seu plano.</p>
+    <div class="options" data-type="single" data-next="2">
+      <div class="option" data-value="sempre"><div class="emoji">🎨</div><span class="label">Sim, sempre faço trabalhos manuais!</span><div class="indicator"></div></div>
+      <div class="option" data-value="asvezes"><div class="emoji">🕰️</div><span class="label">Às vezes, quando tenho tempo</span><div class="indicator"></div></div>
+      <div class="option" data-value="nunca_quero"><div class="emoji">🌱</div><span class="label">Nunca, mas quero aprender!</span><div class="indicator"></div></div>
+      <div class="option" data-value="experimentar"><div class="emoji">✨</div><span class="label">Nunca fiz, só quero experimentar algo novo</span><div class="indicator"></div></div>
+    </div>
+  </section>
+
+  <!-- TELA 2 — Experiência com a técnica -->
+  <section class="screen" data-screen="2">
+    <h1>Você já estudou ou tentou aprender alguma técnica de <span class="accent">efeito vitral</span> em casa?</h1>
+    <p class="subtitle">&nbsp;</p>
+    <div class="options" data-type="single" data-next="3">
+      <div class="option" data-value="estudei_testei"><div class="emoji">📚</div><span class="label">Sim, já estudei e até testei algumas técnicas</span><div class="indicator"></div></div>
+      <div class="option" data-value="pesquisei"><div class="emoji">🔎</div><span class="label">Já pesquisei, mas nunca coloquei em prática</span><div class="indicator"></div></div>
+      <div class="option" data-value="comecar_agora"><div class="emoji">🚀</div><span class="label">Ainda não, quero começar agora!</span><div class="indicator"></div></div>
+      <div class="option" data-value="nada"><div class="emoji">🤷‍♀️</div><span class="label">Não sei nada sobre isso</span><div class="indicator"></div></div>
+    </div>
+  </section>
+
+  <!-- TELA 3 — Tempo disponível -->
+  <section class="screen" data-screen="3">
+    <h1>Quanto tempo por dia você teria pra se dedicar ao <span class="accent">Vitral Caseiro</span>?</h1>
+    <p class="subtitle">Com 15 minutos por dia já é possível terminar sua primeira peça.</p>
+    <div class="options" data-type="single" data-next="4">
+      <div class="option" data-value="15min_1h"><div class="emoji">⏱️</div><span class="label">15 minutos a 1 hora</span><div class="indicator"></div></div>
+      <div class="option" data-value="1_3h"><div class="emoji">🕑</div><span class="label">1 a 3 horas</span><div class="indicator"></div></div>
+      <div class="option" data-value="mais_5h"><div class="emoji">🕔</div><span class="label">Mais de 5 horas</span><div class="indicator"></div></div>
+      <div class="option" data-value="dia_todo"><div class="emoji">💪</div><span class="label">Posso me dedicar o dia todo!</span><div class="indicator"></div></div>
+    </div>
+  </section>
+
+  <!-- TELA 4 — Desejo principal (multi) -->
+  <section class="screen" data-screen="4">
+    <h1>O que você mais deseja <span class="accent">alcançar agora</span>?</h1>
+    <p class="subtitle">Pode marcar mais de uma opção.</p>
+    <div class="options" data-type="multi" data-next="5" data-btn="continueDesejo">
+      <div class="option multi" data-value="renda_extra"><div class="emoji">💵</div><span class="label">Ganhar uma renda extra todo mês</span><div class="indicator"></div></div>
+      <div class="option multi" data-value="financeiro_rapido"><div class="emoji">📈</div><span class="label">Melhorar minha situação financeira rapidamente</span><div class="indicator"></div></div>
+      <div class="option multi" data-value="economizar"><div class="emoji">🐷</div><span class="label">Economizar dinheiro fazendo meus próprios presentes e decoração</span><div class="indicator"></div></div>
+      <div class="option multi" data-value="terapia"><div class="emoji">💗</div><span class="label">Ter um momento só meu, relaxar e aliviar o estresse</span><div class="indicator"></div></div>
+      <div class="option multi" data-value="hobby"><div class="emoji">🌸</div><span class="label">Só quero aprender um hobby novo</span><div class="indicator"></div></div>
+    </div>
+    <button class="cta" id="continueDesejo" disabled onclick="goTo(5)">Continuar</button>
+  </section>
+
+  <!-- TELA 5 — Quebra de objeção -->
+  <section class="screen" data-screen="5">
+    <h1>Mas será que é preciso ter <span class="accent">habilidade</span> ou ser especialista pra criar artes com efeito vitral?</h1>
+    <p class="subtitle">Veja peças feitas por alunas que nunca tinham feito artesanato antes:</p>
+
+    <div class="art-grid">
+      <figure><img src="img/peca-helena.jpg" alt="Quadro em efeito vitral com cerejeira e casinha, feito em cartolina"></figure>
+      <figure><img src="img/peca-neuza.jpg" alt="Mandala colorida em efeito vitral feita em CD"></figure>
+      <figure><img src="img/peca-fernanda.jpg" alt="Quadro de paisagem com lago e montanhas em efeito vitral"></figure>
+      <figure><img src="img/peca-beatriz.jpg" alt="Quadro religioso em efeito vitral com moldura de madeira"></figure>
+    </div>
+
+    <span class="pill-no">A resposta é NÃO!</span>
+    <p class="objection-text">Com <b>moldes prontos</b> e técnicas fáceis, qualquer pessoa consegue criar peças lindamente decoradas — mesmo sem nunca ter feito artesanato.</p>
+    <p class="objection-text">No meu método você aprende <b>100% do zero</b>, com um passo a passo simples que transforma materiais comuns (CD, papel, vidro, molduras) em peças que encantam — e que vendem.</p>
+
+    <button class="cta" onclick="goTo(6)">Continuar</button>
+  </section>
+
+  <!-- TELA 6 — Objetivo pós-transformação -->
+  <section class="screen" data-screen="6">
+    <h1>Depois que você já estiver criando suas próprias peças, qual será seu <span class="accent">principal objetivo</span>?</h1>
+    <p class="subtitle">&nbsp;</p>
+    <div class="options" data-type="single" data-next="7">
+      <div class="option" data-value="vender_muito"><div class="emoji">💰</div><span class="label">Aprender a ganhar dinheiro e vender muitas peças</span><div class="indicator"></div></div>
+      <div class="option" data-value="melhorar_resultados"><div class="emoji">📊</div><span class="label">Melhorar ainda mais meus resultados financeiros</span><div class="indicator"></div></div>
+      <div class="option" data-value="presentear"><div class="emoji">🎁</div><span class="label">Presentear e decorar a minha casa</span><div class="indicator"></div></div>
+      <div class="option" data-value="prazer"><div class="emoji">🌿</div><span class="label">Só quero criar por prazer, como um hobby</span><div class="indicator"></div></div>
+    </div>
+  </section>
+
+  <!-- TELA 7 — Temas preferidos (multi) -->
+  <section class="screen" data-screen="7">
+    <h1>Quais <span class="accent">temas</span> você mais quer aprender a criar?</h1>
+    <p class="subtitle">Vou usar isso pra escolher os moldes do seu plano. Pode marcar várias.</p>
+    <div class="options" data-type="multi" data-next="8" data-btn="continueTemas">
+      <div class="option multi" data-value="mandalas"><div class="emoji">💿</div><span class="label">Mandalas em CD e desenhos circulares</span><div class="indicator"></div></div>
+      <div class="option multi" data-value="flores"><div class="emoji">🌹</div><span class="label">Flores e rosas</span><div class="indicator"></div></div>
+      <div class="option multi" data-value="cristas"><div class="emoji">🙏</div><span class="label">Artes cristãs e imagens religiosas</span><div class="indicator"></div></div>
+      <div class="option multi" data-value="paisagens"><div class="emoji">🏞️</div><span class="label">Paisagens e cenários</span><div class="indicator"></div></div>
+      <div class="option multi" data-value="animais"><div class="emoji">🦋</div><span class="label">Animais e borboletas</span><div class="indicator"></div></div>
+      <div class="option multi" data-value="pingentes"><div class="emoji">📿</div><span class="label">Pingentes, corações e enfeites pequenos</span><div class="indicator"></div></div>
+      <div class="option multi" data-value="todos"><div class="emoji">✨</div><span class="label">Quero aprender todos!</span><div class="indicator"></div></div>
+    </div>
+    <button class="cta" id="continueTemas" disabled onclick="goTo(8)">Continuar</button>
+  </section>
+
+  <!-- TELA 8 — Prova social -->
+  <section class="screen" data-screen="8">
+    <h1>Veja o que as <span class="accent">alunas</span> estão criando (e vendendo)</h1>
+    <p class="subtitle">Começaram do zero, sem experiência nenhuma com artesanato. Arraste para ver os depoimentos.</p>
+
+    <div class="testi-carousel">
+      <div class="testi-track anim" id="testiTrack">
+        <div class="testi-card slide">
+          <img src="img/depoimento-helena.jpg" alt="Depoimento de Helena Martins (@helena.vitrais), 5 estrelas: fez sua primeira arte em cartolina com efeito vitral">
+        </div>
+        <div class="testi-card slide">
+          <img src="img/depoimento-neuza.jpg" alt="Depoimento de Neuza Oliveira (@neuza.artesanatos), 5 estrelas: aprendeu do zero e hoje vende suas peças">
+        </div>
+        <div class="testi-card slide">
+          <img src="img/depoimento-fernanda.jpg" alt="Depoimento de Fernanda Rocha (@nanda.vitrais), 5 estrelas: encontrou um hobby que traz paz e virou renda extra">
+        </div>
+        <div class="testi-card slide">
+          <img src="img/depoimento-beatriz.jpg" alt="Depoimento de Beatriz Lima (@bia.artesanatos), 5 estrelas: tinha medo de não conseguir e hoje recebe encomendas">
+        </div>
+      </div>
+    </div>
+    <div class="testi-dots" id="testiDots"></div>
+
+    <div class="wa-chat">
+      <div class="wa-bubble">
+        <div class="wa-name">Camila</div>
+        Nunca imaginei que conseguiria fazer algo tão lindo! 😍 Foi minha primeira mandala em CD e estou encantada com o resultado. Achei o passo a passo super didático e fácil de aplicar. Já quero fazer mais!
+        <span class="wa-time">09:41</span>
+      </div>
+      <div class="wa-bubble me">
+        Que coisa mais linda, Camila! Você arrasou 👏💖
+        <span class="wa-time">09:43 ✓✓</span>
+      </div>
+    </div>
+
+    <p class="section-title">E olha a lojinha online de uma das alunas</p>
+    <p class="section-sub">Ela está vendendo <b>uma única peça</b> por R$59,90 — gastando menos de R$15,00 de material.</p>
+
+    <div class="shop-card">
+      <img src="img/lojinha.jpg" alt="Anúncio na lojinha online de uma aluna: mandala em efeito vitral por R$59,90, com opções de tamanho e parcelamento">
+    </div>
+    <p class="shop-caption">Cada peça vendida deixa mais de R$45 de lucro — e dá pra produzir várias no mesmo dia.</p>
+
+    <button class="cta" onclick="goTo(9)">Eu também quero aprender!</button>
+    <p class="disclaimer">Valores citados são exemplos reais informados por alunas e não representam garantia de ganhos. Os resultados variam conforme dedicação e aplicação individual.</p>
+  </section>
+
+  <!-- TELA 9 — Loading -->
+  <section class="screen" data-screen="9">
+    <div class="loading-wrap">
+      <h1>Você está a segundos de descobrir um talento que pode mudar tudo!</h1>
+      <div class="loading-bar-track"><div class="loading-bar-fill" id="loadingBarFill"></div></div>
+      <p class="loading-status" id="loadingStatus">Analisando suas respostas...</p>
+    </div>
+  </section>
+
+  <!-- TELA 10 — Resultado / oferta -->
+  <section class="screen" data-screen="10">
+    <div class="result-wrap">
+      <div class="mentor-row">
+        <div class="mentor-avatar"><img src="img/sonia-avatar.jpg" alt="Sônia Albuquerque"></div>
+      </div>
+      <h1>Seu plano de <span class="accent">Vitral Caseiro</span> está pronto!</h1>
+      <p class="lead" style="margin-top:10px;">Com base nas suas respostas, montei um caminho com <b>mais de 120 moldes</b> e o passo a passo pra você criar sua primeira peça — mesmo começando do zero e com pouco tempo por dia.</p>
+
+      <div class="plan-card">
+        <h2>Tudo o que você vai aprender no Método Vitral Caseiro</h2>
+        <ul class="check-list">
+          <li>Treinamento completo em aulas gravadas, ensinando do zero a criar artes com efeito vitral lindas e profissionais</li>
+          <li>Passo a passo para criar sua primeira peça em até 24 horas, mesmo sem experiência</li>
+          <li>Técnicas em diferentes superfícies e estilos — CD, papel, vidro, quadros e pingentes</li>
+          <li>Mais de 120 moldes prontos de mandalas, flores, artes cristãs, animais e paisagens</li>
+          <li>Método completo de como vender suas peças no Instagram e chegar a R$1.500,00 ou mais por mês</li>
+          <li>Calculadora automática para precificar suas peças e saber seu custo, lucro e preço ideal</li>
+          <li>Acesso vitalício ao conteúdo, para assistir quando e quantas vezes quiser</li>
+          <li>Guias completos com lista de materiais e o método de criação detalhado</li>
+          <li>Grupo exclusivo no WhatsApp para tirar dúvidas e acompanhar outras alunas</li>
+        </ul>
+      </div>
+
+      <p class="section-title">Alguns dos +120 moldes que você vai aprender</p>
+      <div class="moldes-grid">
+        <img src="img/peca-neuza.jpg" alt="Molde de mandala em efeito vitral">
+        <img src="img/peca-beatriz.jpg" alt="Molde de arte cristã em efeito vitral">
+        <img src="img/peca-fernanda.jpg" alt="Molde de paisagem em efeito vitral">
+        <img src="img/peca-helena.jpg" alt="Molde de árvore florida em efeito vitral">
+      </div>
+
+      <div class="scarcity">Última turma com preço promocional</div>
+      <div class="price-box">
+        <p class="price-name">Método Vitral Caseiro</p>
+        <span class="price-old">De <s>R$149,90</s> por</span>
+        <span class="price-new">R$37,90</span>
+        <p class="price-note">à vista · acesso imediato e vitalício</p>
+        <a class="cta" id="checkoutBtn" href="https://pay.wiapy.com/AeNuelV6YYif?utm_source=organic" style="text-align:center;text-decoration:none;">Comprar agora com desconto</a>
+        <p class="offer-timer">Desconto válido por: <b class="countdown">15:00</b></p>
+        <img class="pay-seal" src="img/selo-seguranca.png" alt="Compra 100% segura · Visa, Mastercard, Diners Club, Hipercard, Elo, boleto e Mercado Pago">
+      </div>
+
+      <div class="bonus-block">
+        <div class="bonus-head">
+          <b>🎁 Você também recebe 4 bônus exclusivos</b>
+          <span>Inclusos no método, sem pagar nada a mais</span>
+        </div>
+        <div class="bonus-card">
+          <span class="bonus-tag">Bônus 1</span>
+          <b>Checklist da Peça Perfeita</b>
+          <p>Saiba exatamente o que revisar para criar peças impecáveis, sem falhas, sem manchas e com acabamento profissional desde a primeira vez.</p>
+        </div>
+        <div class="bonus-card">
+          <span class="bonus-tag">Bônus 2</span>
+          <b>Mini curso de fotos profissionais</b>
+          <p>Aprenda a fotografar suas peças usando só o celular: luz, ângulos, fundos e composição. Fotos bonitas vendem até 3x mais.</p>
+        </div>
+        <div class="bonus-card">
+          <span class="bonus-tag">Bônus 3</span>
+          <b>Lista de temas lucrativos</b>
+          <p>Descubra quais temas são mais buscados e valorizados pelos clientes, para criar peças que vendem o ano todo.</p>
+        </div>
+        <div class="bonus-card">
+          <span class="bonus-tag">Bônus 4</span>
+          <b>Planilha automática de lucros</b>
+          <p>Calcule custo, preço ideal e margem de lucro de cada peça em segundos. Nunca mais venda sem saber quanto está ganhando.</p>
+        </div>
+      </div>
+
+      <div class="guarantee">
+        <b>🛡️ Garantia de 7 dias</b>
+        <p>Teste sem compromisso! Se não for pra você, devolvemos todo o valor diretamente no seu Pix ou cartão.</p>
+      </div>
+
+      <div class="bio-card">
+        <img class="bio-photo" src="img/sonia-bio.jpg" alt="Sônia Albuquerque">
+        <p class="bio-name">Sônia Albuquerque</p>
+        <p>Sou apaixonada pela criação artesanal e, desde 2019, me dedico ao universo do vitral caseiro personalizado. Descobri no falso vitral uma técnica simples, acessível e cheia de possibilidades para quem busca criatividade, terapia e também uma fonte real de renda extra.</p>
+        <p>Comecei fazendo peças só como hobby, para presentear familiares e amigos. Mas rapidamente percebi o quanto elas chamavam atenção, encantavam quem via e despertavam interesse de compra.</p>
+        <p>Com o tempo fui aperfeiçoando minhas técnicas, testando materiais, tintas e acabamentos — até transformar tudo em um método organizado, simples de aplicar e totalmente acessível para iniciantes.</p>
+        <p>Hoje ajudo mulheres de todas as idades a criar peças lindas, elegantes e valorizadas — seja para decorar a casa, montar presentes especiais ou começar a vender e gerar sua própria renda. E eu quero mostrar que você também pode. Mesmo sem experiência. Mesmo começando com pouco dinheiro. E trabalhando do conforto da sua casa.</p>
+      </div>
+
+      <div class="scarcity" style="margin-top:18px;">Última turma com preço promocional</div>
+      <div class="price-box">
+        <p class="price-name">Método Vitral Caseiro</p>
+        <span class="price-old">De <s>R$149,90</s> por</span>
+        <span class="price-new">R$37,90</span>
+        <p class="price-note">à vista · acesso imediato e vitalício</p>
+        <a class="cta" id="checkoutBtnFinal" href="https://pay.wiapy.com/AeNuelV6YYif?utm_source=organic" style="text-align:center;text-decoration:none;">Quero garantir minha vaga</a>
+        <p class="offer-timer">Desconto válido por: <b class="countdown">15:00</b></p>
+        <img class="pay-seal" src="img/selo-seguranca.png" alt="Compra 100% segura · Visa, Mastercard, Diners Club, Hipercard, Elo, boleto e Mercado Pago">
+      </div>
+
+      <p class="waiting-note">Vagas limitadas para completar a última turma com desconto.</p>
+      <p class="disclaimer">Os resultados podem variar de acordo com a dedicação, experiência, disponibilidade e aplicação individual de cada aluna. O conteúdo é educacional e não representa garantia de ganhos financeiros.</p>
+      <p class="footer-brand">© 2026 Sônia Albuquerque · Método Vitral Caseiro</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+  const totalScreens = 11; // 0 a 10
+  const LOADING_SCREEN = 9;
+  const RESULT_SCREEN = 10;
+
+  let current = 0;
+  const answers = {};
+  let loadingTimer = null;
+
+  const screens = document.querySelectorAll('.screen');
+  const progressTrack = document.getElementById('progressTrack');
+  const progressFill = document.getElementById('progressFill');
+  const loadingBarFill = document.getElementById('loadingBarFill');
+  const loadingStatus = document.getElementById('loadingStatus');
+
+  const loadingMessages = [
+    'Analisando suas respostas...',
+    'Selecionando os moldes ideais pra você...',
+    'Montando seu passo a passo...',
+    'Quase pronto...'
+  ];
+
+  function updateProgress(){
+    const pct = Math.round((current / (totalScreens - 1)) * 100);
+    progressFill.style.width = pct + '%';
+    progressTrack.classList.toggle('hidden', current === LOADING_SCREEN);
+  }
+
+  function startLoading(){
+    if(loadingTimer) clearInterval(loadingTimer);
+    let progress = 0;
+    let msgIndex = 0;
+    loadingBarFill.style.width = '0%';
+    loadingStatus.style.opacity = '1';
+    loadingStatus.textContent = loadingMessages[0];
+
+    loadingTimer = setInterval(() => {
+      progress += Math.floor(Math.random() * 8) + 4;
+      if(progress > 100) progress = 100;
+      loadingBarFill.style.width = progress + '%';
+
+      const nextMsg = Math.min(
+        loadingMessages.length - 1,
+        Math.floor(progress / (100 / loadingMessages.length))
+      );
+      if(nextMsg !== msgIndex){
+        msgIndex = nextMsg;
+        loadingStatus.style.opacity = '0';
+        setTimeout(() => {
+          loadingStatus.textContent = loadingMessages[msgIndex];
+          loadingStatus.style.opacity = '1';
+        }, 180);
+      }
+
+      if(progress >= 100){
+        clearInterval(loadingTimer);
+        loadingTimer = null;
+        setTimeout(() => goTo(RESULT_SCREEN), 350);
+      }
+    }, 220);
+  }
+
+  // Telas ocultas não têm largura: o carrossel só consegue se posicionar depois
+  // que a tela dele fica ativa, por isso cada troca avisa quem precisa saber.
+  function goTo(index){
+    screens.forEach(s => s.classList.remove('active'));
+    document.querySelector('.screen[data-screen="'+index+'"]').classList.add('active');
+    current = index;
+    updateProgress();
+    document.dispatchEvent(new CustomEvent('screenchange', {detail:{screen:String(index)}}));
+    window.scrollTo({top:0, behavior:'smooth'});
+    if(index === LOADING_SCREEN) startLoading();
+  }
+
+  // Opções são divs por causa do layout: aqui elas ganham semântica e teclado
+  document.querySelectorAll('.option').forEach(opt => {
+    const multi = opt.classList.contains('multi');
+    opt.setAttribute('role', multi ? 'checkbox' : 'radio');
+    opt.setAttribute('aria-checked', 'false');
+    opt.tabIndex = 0;
+    opt.addEventListener('keydown', event => {
+      if(event.key === 'Enter' || event.key === ' '){
+        event.preventDefault();
+        opt.click();
+      }
+    });
+  });
+
+  function syncChecked(group){
+    group.querySelectorAll('.option').forEach(o => {
+      o.setAttribute('aria-checked', o.classList.contains('selected') ? 'true' : 'false');
+    });
+  }
+
+  // Single-select: clique marca a opção e avança sozinho
+  document.querySelectorAll('.options[data-type="single"]').forEach(group => {
+    const nextScreen = parseInt(group.dataset.next, 10);
+    group.querySelectorAll('.option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        group.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        syncChecked(group);
+        answers[group.closest('.screen').dataset.screen] = opt.dataset.value;
+        setTimeout(() => goTo(nextScreen), 280);
+      });
+    });
+  });
+
+  // Multi-select: alterna seleção e libera o botão Continuar
+  document.querySelectorAll('.options[data-type="multi"]').forEach(group => {
+    const btn = document.getElementById(group.dataset.btn);
+    const screenKey = group.closest('.screen').dataset.screen;
+    group.querySelectorAll('.option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        opt.classList.toggle('selected');
+        syncChecked(group);
+        const selected = Array.from(group.querySelectorAll('.option.selected')).map(o => o.dataset.value);
+        answers[screenKey] = selected;
+        if(btn) btn.disabled = selected.length === 0;
+      });
+    });
+  });
+
+  updateProgress();
+
+  // Rastreamento das telas. Como o quiz é uma página só, a URL nunca muda e os painéis
+  // veriam tudo como uma visita única — daí cada tela virar um evento.
+  (function(){
+    const screenEvents = {
+      '0':  'quiz-landing',
+      '1':  'quiz-p1-experiencia-artesanato',
+      '2':  'quiz-p2-experiencia-vitral',
+      '3':  'quiz-p3-tempo-disponivel',
+      '4':  'quiz-p4-objetivo',
+      '5':  'quiz-quebra-objecao',
+      '6':  'quiz-p5-meta',
+      '7':  'quiz-p6-temas',
+      '8':  'quiz-prova-social',
+      '9':  'quiz-loading',
+      '10': 'quiz-oferta'
+    };
+
+    // Bloqueador de anúncios pode derrubar qualquer uma das duas tags.
+    function toClarity(name){
+      if(typeof window.clarity === 'function' && name) window.clarity('event', name);
+    }
+    function toMeta(name, method){
+      if(typeof window.fbq === 'function') window.fbq(method || 'track', name);
+    }
+
+    document.addEventListener('screenchange', event => {
+      const screen = event.detail.screen;
+      toClarity(screenEvents[screen]);
+      // No Meta só a oferta virou evento: uma tela por pergunta encheria a conta de eventos
+      // sem uso. Este serve para público de remarketing de quem chegou no preço.
+      if(screen === String(RESULT_SCREEN)) toMeta('QuizOfertaVista', 'trackCustom');
+    });
+    toClarity(screenEvents['0']); // a tela 0 já começa ativa, sem passar pelo goTo
+
+    document.querySelectorAll('a[href*="pay.wiapy.com"]').forEach(link => {
+      link.addEventListener('click', () => {
+        toClarity('quiz-clique-checkout');
+        toMeta('InitiateCheckout');
+      });
+    });
+  })();
+
+  // Contagem de 15 min da oferta. Começa quando a tela de resultado aparece e mira um
+  // horário fixo em vez de somar ticks, senão a aba em segundo plano atrasaria o relógio.
+  (function(){
+    const labels = document.querySelectorAll('.countdown');
+    if(!labels.length) return;
+
+    const duration = 15 * 60 * 1000;
+    let deadline = null;
+    let timer = null;
+
+    function render(){
+      const left = Math.max(0, Math.round((deadline - Date.now()) / 1000));
+      const text = String(Math.floor(left / 60)).padStart(2, '0') + ':' + String(left % 60).padStart(2, '0');
+      labels.forEach(label => { label.textContent = text; });
+      if(left === 0 && timer){
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    document.addEventListener('screenchange', event => {
+      if(event.detail.screen !== String(RESULT_SCREEN) || deadline) return;
+      deadline = Date.now() + duration;
+      render();
+      timer = setInterval(render, 1000);
+    });
+  })();
+
+  // Back redirect. Só é armado quando a lead chega na oferta: antes disso o botão voltar
+  // do navegador funciona normal. Ao chegar na oferta, empurra uma entrada extra no
+  // histórico; quando ela aperta voltar, cai no link abaixo em vez de sair da página.
+  (function(){
+    // Caminho relativo: funciona em qualquer domínio, desde que oferta-especial.html
+    // fique na mesma pasta que este index.html.
+    const BACK_REDIRECT_URL = 'oferta-especial.html';
+    let armed = false;
+
+    // Repassa os parâmetros da URL atual (UTMs etc.) sem sobrescrever os que o link já tem
+    function withParams(url){
+      const target = new URL(url, location.href);
+      new URLSearchParams(location.search).forEach((value, key) => {
+        if(!target.searchParams.has(key)) target.searchParams.set(key, value);
+      });
+      return target.toString();
+    }
+
+    document.addEventListener('screenchange', event => {
+      if(armed || event.detail.screen !== String(RESULT_SCREEN)) return;
+      armed = true;
+      history.pushState({backRedirect:true}, '', location.href);
+      window.addEventListener('popstate', () => {
+        if(typeof window.clarity === 'function') window.clarity('event', 'quiz-back-redirect');
+        location.replace(withParams(BACK_REDIRECT_URL));
+      });
+    });
+  })();
+
+  // Carrossel de depoimentos — autoplay, loop infinito, swipe/arraste e dots
+  (function(){
+    const track = document.getElementById('testiTrack');
+    const dotsWrap = document.getElementById('testiDots');
+    if(!track || !dotsWrap) return;
+
+    const realSlides = Array.from(track.children);
+    const total = realSlides.length;
+
+    // Clona a última pra frente e a primeira pro fim, pro loop não "voltar" visualmente
+    const firstClone = realSlides[0].cloneNode(true);
+    const lastClone = realSlides[total - 1].cloneNode(true);
+    track.appendChild(firstClone);
+    track.insertBefore(lastClone, realSlides[0]);
+
+    let index = 1; // primeiro slide real (posição 0 é o clone do último)
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragBaseX = 0;
+    let autoplayTimer = null;
+
+    for(let i = 0; i < total; i++){
+      const dot = document.createElement('div');
+      dot.className = 'testi-dot' + (i === 0 ? ' active' : '');
+      dot.style.cursor = 'pointer';
+      dotsWrap.appendChild(dot);
+    }
+    const dots = Array.from(dotsWrap.children);
+
+    function updateDots(realIndex){
+      dots.forEach((d, i) => d.classList.toggle('active', i === realIndex));
+    }
+
+    function slideWidth(){
+      const card = track.children[0];
+      return card.offsetWidth + parseFloat(getComputedStyle(card).marginRight);
+    }
+
+    function baseX(i){
+      const viewport = track.parentElement;
+      const card = track.children[0];
+      const centerOffset = (viewport.offsetWidth - card.offsetWidth) / 2;
+      return centerOffset - i * slideWidth();
+    }
+
+    function slideTo(i, animate){
+      track.classList.toggle('anim', animate !== false);
+      track.classList.toggle('no-anim', animate === false);
+      if(animate === false) void track.offsetWidth; // reflow: evita animar o salto do loop
+      track.style.transform = 'translateX(' + baseX(i) + 'px)';
+      index = i;
+      updateDots(((i - 1) % total + total) % total);
+    }
+
+    // Troca o clone pelo slide real equivalente. Em abas em segundo plano o
+    // transitionend não dispara, então isso também roda por timer e ao voltar o foco.
+    function normalize(){
+      if(index >= total + 1) slideTo(1, false);
+      else if(index <= 0) slideTo(total, false);
+    }
+
+    track.addEventListener('transitionend', normalize);
+
+    function next(){
+      normalize();
+      slideTo(index + 1, true);
+      setTimeout(normalize, 700);
+    }
+    function prev(){
+      normalize();
+      slideTo(index - 1, true);
+      setTimeout(normalize, 700);
+    }
+    function startAutoplay(){
+      if(autoplayTimer) return;
+      autoplayTimer = setInterval(next, 5000);
+    }
+    function stopAutoplay(){ if(autoplayTimer){ clearInterval(autoplayTimer); autoplayTimer = null; } }
+    function restartAutoplay(){ stopAutoplay(); startAutoplay(); }
+
+    const ownScreen = track.closest('.screen').dataset.screen;
+    let onScreen = track.closest('.screen').classList.contains('active');
+
+    function resume(){
+      if(!onScreen || document.hidden) return;
+      normalize();
+      slideTo(index, false); // recalcula as medidas: a tela pode ter acabado de aparecer
+      startAutoplay();
+    }
+
+    document.addEventListener('screenchange', event => {
+      onScreen = event.detail.screen === ownScreen;
+      if(onScreen) resume();
+      else stopAutoplay();
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if(document.hidden) stopAutoplay();
+      else resume();
+    });
+
+    function dragStart(x){
+      isDragging = true;
+      dragStartX = x;
+      dragBaseX = baseX(index);
+      track.classList.remove('anim');
+      track.classList.add('no-anim');
+      stopAutoplay();
+    }
+    function dragMove(x){
+      if(!isDragging) return;
+      track.style.transform = 'translateX(' + (dragBaseX + (x - dragStartX)) + 'px)';
+    }
+    function dragEnd(x){
+      if(!isDragging) return;
+      isDragging = false;
+      const delta = x - dragStartX;
+      const threshold = slideWidth() * 0.18;
+      if(delta > threshold) prev();
+      else if(delta < -threshold) next();
+      else slideTo(index, true);
+      restartAutoplay();
+    }
+
+    track.addEventListener('touchstart', e => dragStart(e.touches[0].clientX), {passive:true});
+    track.addEventListener('touchmove', e => dragMove(e.touches[0].clientX), {passive:true});
+    track.addEventListener('touchend', e => dragEnd(e.changedTouches[0].clientX));
+    track.addEventListener('mousedown', e => { dragStart(e.clientX); e.preventDefault(); });
+    window.addEventListener('mousemove', e => { if(isDragging) dragMove(e.clientX); });
+    window.addEventListener('mouseup', e => { if(isDragging) dragEnd(e.clientX); });
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener('click', () => {
+        slideTo(i + 1, true);
+        restartAutoplay();
+      });
+    });
+
+    slideTo(1, false);
+    window.addEventListener('resize', () => slideTo(index, false));
+    resume();
+  })();
+</script>
+</body>
+</html>
