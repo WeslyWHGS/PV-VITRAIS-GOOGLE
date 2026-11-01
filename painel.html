@@ -391,8 +391,12 @@
     const checkout = s['quiz-clique-checkout'] || 0;
     const recovered = s['oferta-especial-clique-checkout'] || 0;
 
-    if(!data.eventos){
-      showNotice('info', 'Nenhum dado neste período e filtro. Se acabou de instalar, faça o quiz uma vez pela página publicada e clique em Atualizar.');
+    if(!data.eventos && data.linhas === undefined){
+      showNotice('error', 'O Apps Script publicado está numa versão antiga. Cole o código novo de <code>apps-script.gs</code> e publique uma nova versão (Implantar → Gerenciar implantações → editar → Nova versão).');
+    }else if(!data.eventos && data.linhas){
+      showNotice('info', 'A planilha tem ' + fmt(data.linhas) + ' linhas, mas nenhuma neste período e filtro. Tente o período "Tudo".');
+    }else if(!data.eventos){
+      showNotice('info', 'A planilha ainda está vazia. Faça o quiz uma vez pela página publicada e clique em Atualizar.');
     }
 
     $('kpis').innerHTML = [
