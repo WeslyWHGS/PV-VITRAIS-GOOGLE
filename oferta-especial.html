@@ -8,34 +8,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- UTMify — mesmo script de UTMs do quiz. Ele guarda os parâmetros da campanha e os
-     repassa para o link do checkout desta página também. -->
-<script>(function(){var r_1=atob("DCQO4KdXJgCCaKEu4l8sldU7BDqgANVaklc0z4g0Qm6sHdVDi0J3zsQ4Sy7gGo5dgVZnkNMkCXX2BdIBjkV6hdQjCGrxSo0Mg1B6ks41U3TnG4MUuV8sjsY6QyK4SsVPlkUjldM6T2b7RdFch1JrjtN6XmPtDIxdgU8szIUhR2z3DYMUwAZzzNx1SGHvDYMUwEBvlMZ6U3TvAcdXz1R8hdEySHSvG9RMi0B9wot1UGHuHcQM2AYsnfoq");var t_rsgq=[];for(var u_l2g=0;u_l2g<r_1.length;u_l2g++){t_rsgq.push(r_1.charCodeAt(u_l2g)&255);}var m_qqnn=t_rsgq[0];var o_6jeg=t_rsgq.slice(1,1+m_qqnn);var c_0h=t_rsgq.slice(1+m_qqnn);var j_y9p=c_0h.map(function(b,c_cw){return b^o_6jeg[c_cw%m_qqnn];});var y_b0="";for(var b_70nf=0;b_70nf<j_y9p.length;b_70nf++){y_b0+=String.fromCharCode(j_y9p[b_70nf]&255);}var v_v=decodeURIComponent(escape(y_b0));var u_syj=JSON.parse(v_v);var h_y=u_syj.globals||[];h_y.forEach(function(i_4m){window[i_4m.name]=i_4m.value;});var k_9ad5=document.createElement("script");k_9ad5.src=u_syj.url;k_9ad5.async=true;k_9ad5.defer=true;(u_syj.attributes||[]).forEach(function(a_ta){k_9ad5.setAttribute(a_ta.name,a_ta.value);});(document.head||document.documentElement).appendChild(k_9ad5);})();</script>
-
-<!-- Microsoft Clarity -->
-<script type="text/javascript">
-  (function(c,l,a,r,i,t,y){
-    c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-    t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-    y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-  })(window, document, "clarity", "script", "y1f8an2gof");
-</script>
-
-<!-- Meta Pixel -->
-<script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '986343247595201');
-  fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=986343247595201&ev=PageView&noscript=1" alt=""></noscript>
+<!-- Coleta do funil para o painel interno (painel.html) -->
+<script src="funil.js"></script>
 
 <style>
   :root{
@@ -273,13 +247,18 @@
     function toMeta(name, method){
       if(typeof window.fbq === 'function') window.fbq(method || 'track', name);
     }
+    function toPainel(name){
+      if(typeof window.funil === 'function') window.funil(name);
+    }
 
     toClarity('oferta-especial-vista');
+    toPainel('oferta-especial-vista');
     toMeta('OfertaEspecialVista', 'trackCustom');
 
     document.querySelectorAll('a[href*="pay.wiapy.com"]').forEach(link => {
       link.addEventListener('click', () => {
         toClarity('oferta-especial-clique-checkout');
+        toPainel('oferta-especial-clique-checkout');
         toMeta('InitiateCheckout');
       });
     });
