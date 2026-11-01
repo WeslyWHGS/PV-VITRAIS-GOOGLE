@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel do funil — Vitral Caseiro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<!-- Só para ler a URL do Apps Script (window.FUNIL_URL): o painel não envia eventos -->
+<script src="funil.js"></script>
+
+<style>
+  :root{
+    --bg:#f2f2f4;
+    --card:#ffffff;
+    --card-border:#e4e4e8;
+    --grid:#ececf0;
+    --pink:#ff3d94;
+    --pink-soft:#ffe1ee;
+    --ink:#1c1c22;
+    --ink-soft:#77767f;
+    --ink-muted:#a3a2ab;
+    --green:#17a568;
+    --green-soft:#e6f7ef;
+    --warn:#b45309;
+    --warn-soft:#fff4e0;
+    --radius:14px;
+    --shadow:0 2px 8px rgba(20,20,25,0.06);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:'Poppins',system-ui,sans-serif;font-size:14px;
+    padding:24px 16px 60px;
+  }
+  .wrap{max-width:1040px;margin:0 auto;}
+  [hidden]{display:none !important;}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px;}
+  header h1{font-size:22px;margin:0;font-weight:700;}
+  header h1 span{color:var(--pink);}
+  .meta{font-size:12px;color:var(--ink-soft);}
+  .meta button{background:none;border:none;color:var(--ink-soft);text-decoration:underline;cursor:pointer;font:inherit;padding:0;margin-left:8px;}
+
+  .card{
+    background:var(--card);border:1px solid var(--card-border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:18px;margin-bottom:16px;
+  }
+  .card h2{font-size:16px;margin:0 0 2px;font-weight:700;}
+  .card .sub{font-size:12.5px;color:var(--ink-soft);margin:0 0 16px;}
+
+  /* Filtros: uma linha acima de tudo */
+  .filters{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;}
+  .seg{display:inline-flex;background:#ececf0;border-radius:10px;padding:3px;flex-wrap:wrap;}
+  .seg button{
+    border:none;background:none;font:inherit;font-size:13px;font-weight:500;
+    color:var(--ink-soft);padding:7px 12px;border-radius:8px;cursor:pointer;
+  }
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08);}
+  .field{display:flex;flex-direction:column;gap:3px;}
+  .field label{font-size:11px;color:var(--ink-soft);font-weight:600;text-transform:uppercase;letter-spacing:.4px;}
+  select, input[type=password]{
+    font:inherit;font-size:13px;color:var(--ink);background:#fff;
+    border:1px solid var(--card-border);border-radius:8px;padding:8px 10px;min-width:150px;
+  }
+  .btn{
+    font:inherit;font-size:13px;font-weight:700;color:#fff;background:var(--ink);
+    border:none;border-radius:8px;padding:9px 16px;cursor:pointer;
+  }
+  .btn:disabled{opacity:.5;cursor:wait;}
+
+  /* KPIs */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px;}
+  .kpi{background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
+  .kpi .k-label{font-size:12px;color:var(--ink-soft);font-weight:500;}
+  .kpi .k-value{font-size:28px;font-weight:700;line-height:1.2;margin-top:4px;font-variant-numeric:tabular-nums;}
+  .kpi .k-note{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .kpi .k-note b{color:var(--ink);font-weight:600;}
+
+  /* Funil */
+  .f-head, .f-row{
+    display:grid;grid-template-columns:minmax(150px,240px) 1fr 104px 76px;
+    gap:12px;align-items:center;
+  }
+  .f-head{font-size:11px;color:var(--ink-muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;padding:0 8px 8px;border-bottom:1px solid var(--grid);}
+  .f-head .r, .f-num, .f-drop{text-align:right;}
+  .f-row{padding:7px 8px;border-radius:8px;cursor:default;}
+  .f-row:hover{background:#f7f7f9;}
+  .f-label{font-size:13px;line-height:1.35;}
+  .f-track{height:18px;position:relative;}
+  .f-bar{height:100%;background:var(--pink);border-radius:0 4px 4px 0;min-width:2px;transition:width .4s ease;}
+  .f-num{font-variant-numeric:tabular-nums;}
+  .f-num b{display:block;font-size:14px;font-weight:600;}
+  .f-num span{font-size:11.5px;color:var(--ink-soft);}
+  .f-drop{font-size:13px;color:var(--ink-soft);font-variant-numeric:tabular-nums;}
+  .f-row.worst{background:var(--warn-soft);}
+  .f-row.worst .f-drop{color:var(--warn);font-weight:700;}
+  .tag-worst{
+    display:inline-block;margin-left:6px;font-size:10.5px;font-weight:700;
+    color:var(--warn);background:#fff;border:1px solid #f3d2a2;
+    border-radius:99px;padding:1px 8px;vertical-align:1px;white-space:nowrap;
+  }
+
+  /* Respostas */
+  .answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;}
+  .q{border:1px solid var(--grid);border-radius:12px;padding:14px;}
+  .q h3{font-size:13.5px;margin:0 0 2px;font-weight:600;line-height:1.4;}
+  .q .q-sub{font-size:11.5px;color:var(--ink-soft);margin:0 0 10px;}
+  .a-row{padding:5px 0;}
+  .a-top{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;margin-bottom:4px;}
+  .a-top span:last-child{color:var(--ink-soft);white-space:nowrap;font-variant-numeric:tabular-nums;}
+  .a-track{height:8px;}
+  .a-bar{height:100%;background:var(--pink);border-radius:0 4px 4px 0;min-width:2px;}
+
+  /* Tabelas */
+  .tables{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;}
+  .tables .card{margin-bottom:0;}
+  .t-scroll{overflow-x:auto;}
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  th{font-size:11px;color:var(--ink-muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;text-align:right;padding:6px 8px;border-bottom:1px solid var(--grid);white-space:nowrap;}
+  td{padding:8px;text-align:right;border-bottom:1px solid var(--grid);font-variant-numeric:tabular-nums;white-space:nowrap;}
+  th:first-child, td:first-child{text-align:left;white-space:normal;word-break:break-word;min-width:110px;}
+  tr:last-child td{border-bottom:none;}
+  td.strong{font-weight:700;}
+
+  .empty{color:var(--ink-soft);font-size:13px;text-align:center;padding:24px 8px;}
+  .notice{border-radius:12px;padding:14px 16px;font-size:13px;line-height:1.55;margin-bottom:16px;}
+  .notice.error{background:#fdecec;color:#9b1c1c;}
+  .notice.info{background:var(--pink-soft);color:#8a1f52;}
+  .notice code{background:rgba(255,255,255,.7);padding:1px 5px;border-radius:4px;}
+
+  /* Login */
+  .login{max-width:360px;margin:60px auto;text-align:center;}
+  .login h1{font-size:20px;margin:0 0 6px;}
+  .login p{color:var(--ink-soft);font-size:13px;margin:0 0 18px;}
+  .login form{display:flex;flex-direction:column;gap:10px;}
+  .login input{width:100%;padding:11px 12px;font-size:14px;}
+  .login .btn{padding:12px;}
+  .login .err{color:#b91c1c;font-size:12.5px;min-height:1.2em;margin:0;}
+
+  /* Tooltip das barras */
+  .tip{
+    position:fixed;z-index:10;pointer-events:none;
+    background:var(--ink);color:#fff;font-size:12px;line-height:1.5;
+    padding:8px 10px;border-radius:8px;max-width:260px;
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+  }
+  .tip b{font-weight:600;}
+
+  @media (max-width:640px){
+    .f-head{display:none;}
+    .f-row{grid-template-columns:1fr auto auto;row-gap:6px;}
+    .f-label{grid-column:1 / -1;}
+    .f-track{grid-column:1 / 2;}
+    .kpi .k-value{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Login: a chave fica salva só neste navegador -->
+  <section class="login card" id="loginView" hidden>
+    <h1>Painel do funil</h1>
+    <p>Digite a chave definida no Apps Script (<code>CHAVE_PAINEL</code>).</p>
+    <form id="loginForm">
+      <input type="password" id="loginKey" placeholder="Chave do painel" autocomplete="current-password" required>
+      <button class="btn" type="submit">Entrar</button>
+      <p class="err" id="loginErr"></p>
+    </form>
+  </section>
+
+  <div id="appView" hidden>
+    <header>
+      <h1>Painel do funil · <span>Vitral Caseiro</span></h1>
+      <div class="meta"><span id="updatedAt">—</span><button type="button" id="logout">Sair</button></div>
+    </header>
+
+    <div class="card">
+      <div class="filters">
+        <div class="field">
+          <label>Período</label>
+          <div class="seg" id="periodSeg">
+            <button type="button" data-period="hoje">Hoje</button>
+            <button type="button" data-period="ontem">Ontem</button>
+            <button type="button" data-period="7" class="on">7 dias</button>
+            <button type="button" data-period="30">30 dias</button>
+            <button type="button" data-period="tudo">Tudo</button>
+          </div>
+        </div>
+        <div class="field">
+          <label for="fOrigem">Origem</label>
+          <select id="fOrigem"><option value="">Todas</option></select>
+        </div>
+        <div class="field">
+          <label for="fCampanha">Campanha</label>
+          <select id="fCampanha"><option value="">Todas</option></select>
+        </div>
+        <div class="field">
+          <label for="fDispositivo">Dispositivo</label>
+          <select id="fDispositivo">
+            <option value="">Todos</option>
+            <option value="celular">Celular</option>
+            <option value="computador">Computador</option>
+          </select>
+        </div>
+        <button class="btn" type="button" id="refresh">Atualizar</button>
+      </div>
+    </div>
+
+    <div id="notice"></div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <div class="card">
+      <h2>Funil do quiz</h2>
+      <p class="sub">Pessoas únicas que chegaram em cada etapa. A linha destacada é onde você perde a maior parte das leads.</p>
+      <div class="f-head"><span>Etapa</span><span></span><span class="r">Pessoas · % do início</span><span class="r">Queda</span></div>
+      <div id="funnelMain"></div>
+    </div>
+
+    <div class="card">
+      <h2>Recuperação pelo back redirect</h2>
+      <p class="sub">De quem viu a oferta de R$37,90: quantas tentaram sair, viram a oferta especial e clicaram para comprar por R$19,90.</p>
+      <div class="f-head"><span>Etapa</span><span></span><span class="r">Pessoas · % do início</span><span class="r">Queda</span></div>
+      <div id="funnelBack"></div>
+    </div>
+
+    <div class="card">
+      <h2>Respostas do quiz</h2>
+      <p class="sub">Percentual de quem respondeu cada pergunta. Nas perguntas de várias opções a soma passa de 100%.</p>
+      <div class="answers" id="answers"></div>
+    </div>
+
+    <div class="tables">
+      <div class="card">
+        <h2>Por campanha</h2>
+        <p class="sub">utm_campaign de cada visita. Checkout soma os cliques nas duas ofertas.</p>
+        <div class="t-scroll" id="tCampanha"></div>
+      </div>
+      <div class="card">
+        <h2>Por dispositivo</h2>
+        <p class="sub">Celular x computador. Checkout soma os cliques nas duas ofertas.</p>
+        <div class="t-scroll" id="tDispositivo"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>Por dia</h2>
+      <p class="sub">Horário de Brasília. Checkout soma os cliques nas duas ofertas.</p>
+      <div class="t-scroll" id="tDia"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="tip" id="tip" hidden></div>
+
+<script>
+  // Ordem e nomes das etapas. Os ids são os mesmos eventos que index.html envia.
+  const MAIN_STEPS = [
+    ['quiz-landing', 'Abertura'],
+    ['quiz-p1-experiencia-artesanato', 'P1 · Experiência com artesanato'],
+    ['quiz-p2-experiencia-vitral', 'P2 · Experiência com efeito vitral'],
+    ['quiz-p3-tempo-disponivel', 'P3 · Tempo disponível'],
+    ['quiz-p4-objetivo', 'P4 · O que deseja alcançar'],
+    ['quiz-quebra-objecao', '"A resposta é NÃO!"'],
+    ['quiz-p5-meta', 'P5 · Principal objetivo'],
+    ['quiz-p6-temas', 'P6 · Temas'],
+    ['quiz-prova-social', 'Prova social'],
+    ['quiz-loading', 'Carregamento'],
+    ['quiz-oferta', 'Oferta R$37,90'],
+    ['quiz-clique-checkout', 'Clique no checkout']
+  ];
+  const BACK_STEPS = [
+    ['quiz-oferta', 'Viu a oferta R$37,90'],
+    ['quiz-back-redirect', 'Apertou voltar'],
+    ['oferta-especial-vista', 'Viu a oferta especial'],
+    ['oferta-especial-clique-checkout', 'Clique no checkout R$19,90']
+  ];
+  const QUESTIONS = [
+    ['p1-experiencia-artesanato', 'P1 · Já trabalhou com artesanato manual?'],
+    ['p2-experiencia-vitral', 'P2 · Já estudou alguma técnica de efeito vitral?'],
+    ['p3-tempo-disponivel', 'P3 · Quanto tempo por dia teria?'],
+    ['p4-objetivo', 'P4 · O que mais deseja alcançar agora?'],
+    ['p5-meta', 'P5 · Principal objetivo depois de criar as peças'],
+    ['p6-temas', 'P6 · Temas que quer aprender']
+  ];
+
+  const KEY_STORAGE = 'painel_funil_chave';
+  const API_URL = window.FUNIL_URL || '';
+
+  const $ = id => document.getElementById(id);
+  const nf = new Intl.NumberFormat('pt-BR');
+  const pf = new Intl.NumberFormat('pt-BR', {style:'percent', maximumFractionDigits:1});
+  const fmt = n => nf.format(n || 0);
+  const pct = x => pf.format(isFinite(x) ? x : 0);
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function getKey(){ try{ return localStorage.getItem(KEY_STORAGE) || ''; }catch(e){ return ''; } }
+  function setKey(v){ try{ v ? localStorage.setItem(KEY_STORAGE, v) : localStorage.removeItem(KEY_STORAGE); }catch(e){} }
+  let sessionKey = getKey();
+
+  let period = '7';
+  let loading = false;
+
+  // Dia de hoje em Brasília (UTC-3, sem horário de verão), no mesmo formato do Apps Script
+  function brDay(offsetDays){
+    return new Date(Date.now() - 3 * 3600e3 - (offsetDays || 0) * 864e5).toISOString().slice(0, 10);
+  }
+  function periodRange(){
+    if(period === 'hoje') return {de:brDay(0), ate:brDay(0)};
+    if(period === 'ontem') return {de:brDay(1), ate:brDay(1)};
+    if(period === 'tudo') return {};
+    return {de:brDay(Number(period) - 1), ate:brDay(0)};
+  }
+
+  function showNotice(type, html){
+    $('notice').innerHTML = html ? '<div class="notice ' + type + '">' + html + '</div>' : '';
+  }
+
+  function showLogin(message){
+    $('appView').hidden = true;
+    $('loginView').hidden = false;
+    $('loginErr').textContent = message || '';
+    $('loginKey').focus();
+  }
+
+  async function load(){
+    if(loading) return;
+    if(!/^https:\/\//.test(API_URL)){
+      $('loginView').hidden = true;
+      $('appView').hidden = false;
+      showNotice('error', 'O painel ainda não está ligado à planilha. Cole a URL do Apps Script em <code>funil.js</code> (constante <code>URL_COLETA</code>).');
+      return;
+    }
+    if(!sessionKey){ showLogin(); return; }
+
+    loading = true;
+    $('refresh').disabled = true;
+    $('refresh').textContent = 'Carregando…';
+    const params = new URLSearchParams(Object.assign({chave:sessionKey}, periodRange()));
+    if($('fOrigem').value) params.set('origem', $('fOrigem').value);
+    if($('fCampanha').value) params.set('campanha', $('fCampanha').value);
+    if($('fDispositivo').value) params.set('dispositivo', $('fDispositivo').value);
+
+    try{
+      const resp = await fetch(API_URL + '?' + params.toString());
+      const data = await resp.json();
+      if(!data.ok){
+        if(data.erro === 'chave'){ sessionKey = ''; setKey(''); showLogin('Chave incorreta.'); return; }
+        throw new Error('resposta inválida');
+      }
+      $('loginView').hidden = true;
+      $('appView').hidden = false;
+      showNotice('', '');
+      render(data);
+      $('updatedAt').textContent = 'Atualizado às ' + new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+    }catch(err){
+      $('loginView').hidden = true;
+      $('appView').hidden = false;
+      showNotice('error', 'Não consegui ler a planilha. Confira se o Apps Script foi implantado como app da Web com acesso para "Qualquer pessoa" e tente de novo.');
+    }finally{
+      loading = false;
+      $('refresh').disabled = false;
+      $('refresh').textContent = 'Atualizar';
+    }
+  }
+
+  function fillSelect(select, values){
+    const current = select.value;
+    const first = select.options[0].outerHTML;
+    select.innerHTML = first + values.map(v => '<option value="' + esc(v) + '">' + esc(v) + '</option>').join('');
+    // Mantém o filtro escolhido mesmo que ele não tenha dados no novo período
+    if(current && values.indexOf(current) === -1) select.insertAdjacentHTML('beforeend', '<option value="' + esc(current) + '">' + esc(current) + '</option>');
+    select.value = current;
+  }
+
+  function render(data){
+    fillSelect($('fOrigem'), data.filtros.origens);
+    fillSelect($('fCampanha'), data.filtros.campanhas);
+
+    const s = data.etapas || {};
+    const visits = s['quiz-landing'] || 0;
+    const offer = s['quiz-oferta'] || 0;
+    const checkout = s['quiz-clique-checkout'] || 0;
+    const recovered = s['oferta-especial-clique-checkout'] || 0;
+
+    if(!data.eventos){
+      showNotice('info', 'Nenhum dado neste período e filtro. Se acabou de instalar, faça o quiz uma vez pela página publicada e clique em Atualizar.');
+    }
+
+    $('kpis').innerHTML = [
+      kpi('Visitas', fmt(visits), 'pessoas que abriram o quiz'),
+      kpi('Chegaram na oferta', fmt(offer), '<b>' + pct(visits ? offer / visits : 0) + '</b> das visitas'),
+      kpi('Cliques no checkout', fmt(checkout), '<b>' + pct(visits ? checkout / visits : 0) + '</b> das visitas · <b>' + pct(offer ? checkout / offer : 0) + '</b> da oferta'),
+      kpi('Recuperados (R$19,90)', fmt(recovered), '<b>' + pct(s['quiz-back-redirect'] ? recovered / s['quiz-back-redirect'] : 0) + '</b> de quem apertou voltar')
+    ].join('');
+
+    renderFunnel($('funnelMain'), MAIN_STEPS, s);
+    // Aqui não apertar voltar não é perda (a lead pode ter comprado), então sem destaque
+    renderFunnel($('funnelBack'), BACK_STEPS, s, false);
+    renderAnswers(data.respostas || {});
+
+    const groups = data.grupos || {};
+    renderTable($('tCampanha'), 'Campanha', groups.campanha, (a, b) => b[1].visitas - a[1].visitas);
+    renderTable($('tDispositivo'), 'Dispositivo', groups.dispositivo, (a, b) => b[1].visitas - a[1].visitas);
+    renderTable($('tDia'), 'Dia', groups.dia, (a, b) => b[0] < a[0] ? -1 : 1, d => d.split('-').reverse().join('/'));
+  }
+
+  function kpi(label, value, note){
+    return '<div class="kpi"><div class="k-label">' + label + '</div><div class="k-value">' + value + '</div><div class="k-note">' + note + '</div></div>';
+  }
+
+  function renderFunnel(el, steps, counts, flagWorst){
+    const base = counts[steps[0][0]] || 0;
+    if(!base){ el.innerHTML = '<div class="empty">Sem dados para este funil no período.</div>'; return; }
+
+    // Maior queda = maior perda relativa entre uma etapa e a anterior
+    let worst = -1, worstLoss = 0;
+    steps.forEach(([id], i) => {
+      if(!i || flagWorst === false) return;
+      const prev = counts[steps[i - 1][0]] || 0;
+      const loss = prev ? (prev - (counts[id] || 0)) / prev : 0;
+      if(loss > worstLoss){ worstLoss = loss; worst = i; }
+    });
+
+    el.innerHTML = steps.map(([id, name], i) => {
+      const n = counts[id] || 0;
+      const share = n / base;
+      const prev = i ? (counts[steps[i - 1][0]] || 0) : 0;
+      const loss = i && prev ? (prev - n) / prev : null;
+      const lost = i ? Math.max(0, prev - n) : 0;
+      const tip = '<b>' + esc(name) + '</b><br>' + fmt(n) + ' pessoas · ' + pct(share) + ' do início' +
+        (i ? '<br>Perdeu ' + fmt(lost) + ' em relação à etapa anterior' : '');
+      return '<div class="f-row' + (i === worst ? ' worst' : '') + '" data-tip="' + esc(tip) + '">' +
+        '<div class="f-label">' + esc(name) + (i === worst ? '<span class="tag-worst">⚠ maior queda</span>' : '') + '</div>' +
+        '<div class="f-track"><div class="f-bar" style="width:' + (share * 100).toFixed(2) + '%"></div></div>' +
+        '<div class="f-num"><b>' + fmt(n) + '</b><span>' + pct(share) + '</span></div>' +
+        '<div class="f-drop">' + (loss === null || loss <= 0 ? '—' : '−' + pct(loss)) + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderAnswers(answers){
+    const html = QUESTIONS.map(([id, title]) => {
+      const q = answers[id];
+      if(!q || !q.total) return '<div class="q"><h3>' + esc(title) + '</h3><div class="empty">Sem respostas.</div></div>';
+      const rows = Object.entries(q.opcoes).sort((a, b) => b[1] - a[1]);
+      return '<div class="q"><h3>' + esc(title) + '</h3><p class="q-sub">' + fmt(q.total) + ' pessoas responderam</p>' +
+        rows.map(([label, n]) => {
+          const share = n / q.total;
+          return '<div class="a-row" data-tip="' + esc('<b>' + esc(label) + '</b><br>' + fmt(n) + ' de ' + fmt(q.total) + ' · ' + pct(share)) + '">' +
+            '<div class="a-top"><span>' + esc(label) + '</span><span>' + fmt(n) + ' · ' + pct(share) + '</span></div>' +
+            '<div class="a-track"><div class="a-bar" style="width:' + (share * 100).toFixed(2) + '%"></div></div>' +
+          '</div>';
+        }).join('') + '</div>';
+    }).join('');
+    $('answers').innerHTML = html;
+  }
+
+  function renderTable(el, firstCol, group, sort, labelFn){
+    const rows = Object.entries(group || {}).filter(([, v]) => v.visitas || v.oferta || v.checkout).sort(sort);
+    if(!rows.length){ el.innerHTML = '<div class="empty">Sem dados no período.</div>'; return; }
+    el.innerHTML = '<table><thead><tr><th>' + firstCol + '</th><th>Visitas</th><th>Oferta</th><th>Checkout</th><th>Conversão</th></tr></thead><tbody>' +
+      rows.map(([name, v]) =>
+        '<tr><td>' + esc(labelFn ? labelFn(name) : name) + '</td>' +
+        '<td>' + fmt(v.visitas) + '</td>' +
+        '<td>' + fmt(v.oferta) + ' <span style="color:var(--ink-soft)">(' + pct(v.visitas ? v.oferta / v.visitas : 0) + ')</span></td>' +
+        '<td>' + fmt(v.checkout) + '</td>' +
+        '<td class="strong">' + pct(v.visitas ? v.checkout / v.visitas : 0) + '</td></tr>'
+      ).join('') + '</tbody></table>';
+  }
+
+  // Tooltip: segue o mouse no computador e aparece no toque no celular
+  (function(){
+    const tip = $('tip');
+    function show(target, x, y){
+      tip.innerHTML = target.dataset.tip;
+      tip.hidden = false;
+      const w = tip.offsetWidth, h = tip.offsetHeight;
+      tip.style.left = Math.min(window.innerWidth - w - 8, x + 14) + 'px';
+      tip.style.top = (y + h + 20 > window.innerHeight ? y - h - 12 : y + 16) + 'px';
+    }
+    document.addEventListener('mousemove', e => {
+      const t = e.target.closest('[data-tip]');
+      if(t) show(t, e.clientX, e.clientY); else tip.hidden = true;
+    });
+    document.addEventListener('touchstart', e => {
+      const t = e.target.closest('[data-tip]');
+      if(t) show(t, e.touches[0].clientX, e.touches[0].clientY); else tip.hidden = true;
+    }, {passive:true});
+    window.addEventListener('scroll', () => { tip.hidden = true; }, {passive:true});
+  })();
+
+  $('periodSeg').addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if(!b) return;
+    period = b.dataset.period;
+    $('periodSeg').querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+    load();
+  });
+  ['fOrigem', 'fCampanha', 'fDispositivo'].forEach(id => $(id).addEventListener('change', load));
+  $('refresh').addEventListener('click', load);
+  $('logout').addEventListener('click', () => { sessionKey = ''; setKey(''); showLogin(); });
+  $('loginForm').addEventListener('submit', e => {
+    e.preventDefault();
+    sessionKey = $('loginKey').value.trim();
+    setKey(sessionKey);
+    load();
+  });
+
+  load();
+</script>
+</body>
+</html>
