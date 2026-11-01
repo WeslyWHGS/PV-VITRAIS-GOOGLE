@@ -17,6 +17,9 @@
   })(window, document, "clarity", "script", "z6ibxxwtqu");
 </script>
 
+<!-- Coleta do funil para o painel interno (painel.html) -->
+<script src="funil.js"></script>
+
 <style>
   :root{
     --bg:#f2f2f4;
@@ -830,19 +833,44 @@
     function toMeta(name, method){
       if(typeof window.fbq === 'function') window.fbq(method || 'track', name);
     }
+    function toPainel(name, extra){
+      if(typeof window.funil === 'function' && name) window.funil(name, extra);
+    }
 
+    // As respostas vão para o painel quando a lead sai da pergunta, já definitivas.
+    // Seleção múltipla vira uma linha por opção marcada.
+    function sendAnswers(screen){
+      const answer = answers[screen];
+      if(!answer) return;
+      const group = document.querySelector('.screen[data-screen="'+screen+'"] .options');
+      (Array.isArray(answer) ? answer : [answer]).forEach(value => {
+        const label = group.querySelector('.option[data-value="'+value+'"] .label');
+        toPainel('quiz-resposta', {
+          pergunta: screenEvents[screen].replace('quiz-', ''),
+          resposta: label ? label.textContent : value
+        });
+      });
+    }
+
+    let lastScreen = '0';
     document.addEventListener('screenchange', event => {
       const screen = event.detail.screen;
+      sendAnswers(lastScreen);
+      lastScreen = screen;
       toClarity(screenEvents[screen]);
+      toPainel(screenEvents[screen]);
       // No Meta só a oferta virou evento: uma tela por pergunta encheria a conta de eventos
       // sem uso. Este serve para público de remarketing de quem chegou no preço.
       if(screen === String(RESULT_SCREEN)) toMeta('QuizOfertaVista', 'trackCustom');
     });
-    toClarity(screenEvents['0']); // a tela 0 já começa ativa, sem passar pelo goTo
+    // a tela 0 já começa ativa, sem passar pelo goTo
+    toClarity(screenEvents['0']);
+    toPainel(screenEvents['0']);
 
     document.querySelectorAll('a[href*="pay.wiapy.com"]').forEach(link => {
       link.addEventListener('click', () => {
         toClarity('quiz-clique-checkout');
+        toPainel('quiz-clique-checkout');
         toMeta('InitiateCheckout');
       });
     });
@@ -900,6 +928,7 @@
       history.pushState({backRedirect:true}, '', location.href);
       window.addEventListener('popstate', () => {
         if(typeof window.clarity === 'function') window.clarity('event', 'quiz-back-redirect');
+        if(typeof window.funil === 'function') window.funil('quiz-back-redirect');
         location.replace(withParams(BACK_REDIRECT_URL));
       });
     });
