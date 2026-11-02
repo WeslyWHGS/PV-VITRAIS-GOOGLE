@@ -8,174 +8,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<style>
-  :root{
-    --bg:#f2f2f4;
-    --card:#ffffff;
-    --card-border:#e4e4e8;
-    --pink:#ff3d94;
-    --pink-soft:#ffe1ee;
-    --ink:#1c1c22;
-    --ink-soft:#77767f;
-    --green:#17a568;
-    --green-dark:#0e8a56;
-    --white:#ffffff;
-    --radius:12px;
-    --shadow: 0 2px 8px rgba(20,20,25,0.06);
-  }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--bg);
-    font-family:'Poppins',system-ui,sans-serif;
-    color:var(--ink);
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    padding:24px 16px 60px;
-  }
-  .phone{width:100%;max-width:520px;animation:fadeIn .35s ease;}
-  @keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
 
-  .alert-bar{
-    background:var(--pink);color:#fff;font-size:13px;font-weight:800;
-    text-transform:uppercase;letter-spacing:.6px;text-align:center;
-    padding:10px 14px;border-radius:8px;margin-bottom:22px;
-    animation:alertBlink 1.6s ease-in-out infinite;
-  }
-  @keyframes alertBlink{0%,100%{opacity:1;}50%{opacity:.75;}}
+<style>:root{--bg:#f2f2f4;--card:#ffffff;--card-border:#e4e4e8;--pink:#ff3d94;--pink-soft:#ffe1ee;--ink:#1c1c22;--ink-soft:#77767f;--green:#17a568;--green-dark:#0e8a56;--white:#ffffff;--radius:12px;--shadow: 0 2px 8px rgba(20,20,25,0.06)}*{box-sizing:border-box}html,body{margin:0;padding:0}body{background:var(--bg);font-family:'Poppins',system-ui,sans-serif;color:var(--ink);min-height:100vh;display:flex;justify-content:center;padding:24px 16px 60px}.phone{width:100%;max-width:520px;animation:fadeIn .35s ease}@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}.alert-bar{background:var(--pink);color:#fff;font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;text-align:center;padding:10px 14px;border-radius:8px;margin-bottom:22px;animation:alertBlink 1.6s ease-in-out infinite}@keyframes alertBlink{0%,100%{opacity:1}50%{opacity:.75}}h1{font-size:26px;font-weight:700;line-height:1.28;text-align:center;margin:0 0 6px}h1 .accent{color:var(--pink)}.lead{text-align:center;font-size:14.5px;line-height:1.6;color:var(--ink);margin:10px 0 6px}.money{color:var(--green);font-weight:700}.mentor-row{display:flex;justify-content:center;margin-bottom:18px}.mentor-avatar{width:96px;height:96px;border-radius:50%;background:linear-gradient(140deg,#eeeef1,#e2e2e7);border:4px solid #fff;box-shadow:var(--shadow);overflow:hidden}.mentor-avatar img{width:100%;height:100%;object-fit:cover;display:block}.cta{display:block;width:100%;background:linear-gradient(135deg,#1dc47c,var(--green) 60%,var(--green-dark));color:#fff;border:none;border-radius:10px;padding:16px;font-size:15px;font-weight:800;letter-spacing:.3px;text-transform:uppercase;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(23,165,104,.45);margin-top:18px;text-align:center;text-decoration:none;transition:background .15s ease,transform .15s ease;animation:ctaPulse 1.8s ease-in-out infinite}.cta:hover{background:linear-gradient(135deg,#1dc47c,var(--green-dark) 60%,var(--green-dark));animation-play-state:paused}.cta:active{transform:scale(.97)}@keyframes ctaPulse{0%{box-shadow:0 4px 14px rgba(23,165,104,.45);transform:scale(1)}50%{box-shadow:0 4px 22px 6px rgba(23,165,104,.65);transform:scale(1.015)}100%{box-shadow:0 4px 14px rgba(23,165,104,.45);transform:scale(1)}}.section-title{text-align:center;font-size:18px;font-weight:700;margin:26px 0 4px}.moldes-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 6px}.moldes-grid img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;display:block}.plan-card{background:#fff;border:1px solid var(--card-border);border-radius:16px;padding:18px 16px;box-shadow:var(--shadow);margin:18px 0 6px;text-align:left}.plan-card h2{font-size:15px;font-weight:700;margin:0 0 12px;text-align:center;line-height:1.4}.check-list{list-style:none;margin:0;padding:0}.check-list li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.55;margin-bottom:11px}.check-list li:last-child{margin-bottom:0}.check-list li::before{content:"✓";flex:none;width:20px;height:20px;border-radius:50%;background:#e6f7ef;color:var(--green);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px}.scarcity{background:var(--ink);color:#fff;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;border-radius:8px 8px 0 0;text-align:center;margin-top:18px}.price-box{background:#fff;border:1px solid var(--card-border);border-top:none;border-radius:0 0 12px 12px;padding:18px 16px;text-align:center;box-shadow:var(--shadow)}.price-name{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--ink);margin:0 0 6px}.price-old{font-size:14px;color:var(--ink-soft)}.price-old s{text-decoration:line-through}.price-new{display:block;font-size:42px;font-weight:800;color:var(--green);line-height:1.1;margin:2px 0 2px}.price-save{display:inline-block;background:var(--pink-soft);color:var(--pink);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:4px 12px;border-radius:99px;margin:6px 0 4px}.price-note{font-size:12.5px;color:var(--ink-soft);margin:0}.offer-timer{font-size:13.5px;color:var(--ink-soft);margin:12px 0 0}.offer-timer b{color:var(--pink);font-weight:800}.pay-seal{display:block;width:100%;max-width:230px;height:auto;margin:10px auto 0}.guarantee{background:#e6f7ef;border:1px solid #bfe8d4;border-radius:12px;padding:16px;margin:18px 0 6px;text-align:center}.guarantee b{display:block;font-size:14.5px;margin-bottom:6px;color:var(--green-dark)}.guarantee p{margin:0;font-size:13px;line-height:1.55;color:var(--ink)}.waiting-note{text-align:center;color:var(--ink-soft);font-size:12.5px;margin-top:14px}.disclaimer{text-align:center;font-size:11px;color:var(--ink-soft);line-height:1.6;margin:16px 0 6px}.footer-brand{text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:4px}@media (max-width:380px){h1{font-size:22px}.price-new{font-size:36px}}@media (prefers-reduced-motion: reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}</style>
 
-  h1{
-    font-size:26px;font-weight:700;line-height:1.28;
-    text-align:center;margin:0 0 6px;
-  }
-  h1 .accent{color:var(--pink);}
-  .lead{
-    text-align:center;font-size:14.5px;line-height:1.6;
-    color:var(--ink);margin:10px 0 6px;
-  }
-  .money{color:var(--green);font-weight:700;}
 
-  .mentor-row{display:flex;justify-content:center;margin-bottom:18px;}
-  .mentor-avatar{
-    width:96px;height:96px;border-radius:50%;
-    background:linear-gradient(140deg,#eeeef1,#e2e2e7);
-    border:4px solid #fff;box-shadow:var(--shadow);overflow:hidden;
-  }
-  .mentor-avatar img{width:100%;height:100%;object-fit:cover;display:block;}
-
-  .cta{
-    display:block;width:100%;
-    background:linear-gradient(135deg,#1dc47c,var(--green) 60%,var(--green-dark));
-    color:#fff;border:none;border-radius:10px;
-    padding:16px;font-size:15px;font-weight:800;
-    letter-spacing:.3px;text-transform:uppercase;
-    cursor:pointer;font-family:inherit;
-    box-shadow:0 4px 14px rgba(23,165,104,.45);
-    margin-top:18px;text-align:center;text-decoration:none;
-    transition:background .15s ease, transform .15s ease;
-    animation:ctaPulse 1.8s ease-in-out infinite;
-  }
-  .cta:hover{background:linear-gradient(135deg,#1dc47c,var(--green-dark) 60%,var(--green-dark));animation-play-state:paused;}
-  .cta:active{transform:scale(.97);}
-  @keyframes ctaPulse{
-    0%{box-shadow:0 4px 14px rgba(23,165,104,.45);transform:scale(1);}
-    50%{box-shadow:0 4px 22px 6px rgba(23,165,104,.65);transform:scale(1.015);}
-    100%{box-shadow:0 4px 14px rgba(23,165,104,.45);transform:scale(1);}
-  }
-
-  .section-title{
-    text-align:center;font-size:18px;font-weight:700;
-    margin:26px 0 4px;
-  }
-  .moldes-grid{
-    display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 6px;
-  }
-  .moldes-grid img{
-    width:100%;aspect-ratio:4/3;object-fit:cover;
-    border-radius:10px;display:block;
-  }
-
-  .plan-card{
-    background:#fff;border:1px solid var(--card-border);
-    border-radius:16px;padding:18px 16px;
-    box-shadow:var(--shadow);margin:18px 0 6px;text-align:left;
-  }
-  .plan-card h2{
-    font-size:15px;font-weight:700;margin:0 0 12px;
-    text-align:center;line-height:1.4;
-  }
-  .check-list{list-style:none;margin:0;padding:0;}
-  .check-list li{
-    display:flex;gap:10px;align-items:flex-start;
-    font-size:13.5px;line-height:1.55;margin-bottom:11px;
-  }
-  .check-list li:last-child{margin-bottom:0;}
-  .check-list li::before{
-    content:"✓";flex:none;width:20px;height:20px;
-    border-radius:50%;background:#e6f7ef;color:var(--green);
-    font-size:12px;font-weight:800;
-    display:flex;align-items:center;justify-content:center;
-    margin-top:1px;
-  }
-
-  .scarcity{
-    background:var(--ink);color:#fff;font-size:12.5px;
-    font-weight:700;text-transform:uppercase;letter-spacing:.5px;
-    padding:10px 14px;border-radius:8px 8px 0 0;text-align:center;
-    margin-top:18px;
-  }
-  .price-box{
-    background:#fff;border:1px solid var(--card-border);
-    border-top:none;border-radius:0 0 12px 12px;
-    padding:18px 16px;text-align:center;box-shadow:var(--shadow);
-  }
-  .price-name{
-    font-size:14px;font-weight:700;text-transform:uppercase;
-    letter-spacing:.6px;color:var(--ink);margin:0 0 6px;
-  }
-  .price-old{font-size:14px;color:var(--ink-soft);}
-  .price-old s{text-decoration:line-through;}
-  .price-new{
-    display:block;font-size:42px;font-weight:800;
-    color:var(--green);line-height:1.1;margin:2px 0 2px;
-  }
-  .price-save{
-    display:inline-block;background:var(--pink-soft);color:var(--pink);
-    font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;
-    padding:4px 12px;border-radius:99px;margin:6px 0 4px;
-  }
-  .price-note{font-size:12.5px;color:var(--ink-soft);margin:0;}
-  .offer-timer{font-size:13.5px;color:var(--ink-soft);margin:12px 0 0;}
-  .offer-timer b{color:var(--pink);font-weight:800;}
-  .pay-seal{
-    display:block;width:100%;max-width:230px;
-    height:auto;margin:10px auto 0;
-  }
-
-  .guarantee{
-    background:#e6f7ef;border:1px solid #bfe8d4;
-    border-radius:12px;padding:16px;margin:18px 0 6px;text-align:center;
-  }
-  .guarantee b{display:block;font-size:14.5px;margin-bottom:6px;color:var(--green-dark);}
-  .guarantee p{margin:0;font-size:13px;line-height:1.55;color:var(--ink);}
-
-  .waiting-note{
-    text-align:center;color:var(--ink-soft);font-size:12.5px;margin-top:14px;
-  }
-  .disclaimer{
-    text-align:center;font-size:11px;color:var(--ink-soft);
-    line-height:1.6;margin:16px 0 6px;
-  }
-  .footer-brand{
-    text-align:center;font-size:11.5px;color:var(--ink-soft);margin-top:4px;
-  }
-  @media (max-width:380px){h1{font-size:22px;}.price-new{font-size:36px;}}
-  @media (prefers-reduced-motion: reduce){
-    *{animation-duration:.01ms !important;transition-duration:.01ms !important;}
-  }
-</style>
 </head>
+
 <body>
 <div class="phone">
 
@@ -195,7 +33,7 @@
     <span class="price-new">R$19,90</span>
     <span class="price-save">Você economiza R$130,00</span>
     <p class="price-note">à vista · acesso imediato e vitalício</p>
-    <a class="cta" href="https://checkout.atelierdigital.site/VCCL1O8SDAPP">Sim! Quero aproveitar o desconto</a>
+    <a class="cta" href="https://pay.wiapy.com/SEU-LINK-OFERTA-ESPECIAL?utm_source=organic">Sim! Quero aproveitar o desconto</a>
     <p class="offer-timer">Esta oferta expira em: <b class="countdown">10:00</b></p>
     <img class="pay-seal" src="img/selo-seguranca.png" alt="Compra 100% segura · Visa, Mastercard, Diners Club, Hipercard, Elo, boleto e Mercado Pago">
   </div>
@@ -226,7 +64,7 @@
     <p>Risco zero pra você! Se não gostar por qualquer motivo, devolvemos todo o valor diretamente no seu Pix ou cartão.</p>
   </div>
 
-  <a class="cta" href="https://checkout.atelierdigital.site/VCCL1O8SDAPP">Garantir por R$19,90 agora</a>
+  <a class="cta" href="https://pay.wiapy.com/SEU-LINK-OFERTA-ESPECIAL?utm_source=organic">Garantir por R$19,90 agora</a>
 
   <p class="waiting-note">Se você sair desta página, o desconto não fica disponível de novo.</p>
   <p class="disclaimer">Os resultados podem variar de acordo com a dedicação, experiência, disponibilidade e aplicação individual de cada aluna. O conteúdo é educacional e não representa garantia de ganhos financeiros.</p>
@@ -235,26 +73,6 @@
 </div>
 
 <script>
-  // Rastreamento: a oferta especial vira evento próprio nos dois painéis, pra comparar
-  // quantas leads o back redirect recupera.
-  (function(){
-    function toClarity(name){
-      if(typeof window.clarity === 'function') window.clarity('event', name);
-    }
-    function toMeta(name, method){
-      if(typeof window.fbq === 'function') window.fbq(method || 'track', name);
-    }
-
-    toClarity('oferta-especial-vista');
-    toMeta('OfertaEspecialVista', 'trackCustom');
-
-    document.querySelectorAll('a[href*="https://checkout.atelierdigital.site"]').forEach(link => {
-      link.addEventListener('click', () => {
-        toClarity('oferta-especial-clique-checkout');        toMeta('InitiateCheckout');
-      });
-    });
-  })();
-
   // Contagem de 10 min. Mira um horário fixo em vez de somar ticks, senão a aba em
   // segundo plano atrasaria o relógio.
   (function(){
